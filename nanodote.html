@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nano-dote: A Paradigm Shift</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lato:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 1. BASE SETUP & RESET */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #050814;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            min-height: 100vh;
+            padding: 40px 0;
+            align-items: center;
+        }
+
+        /* 2. BASE SLIDE CONTAINER */
+        .slide-container {
+            align-items: center;
+            background-color: #0A1128; /* Dark Navy Base */
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            font-family: 'Lato', sans-serif;
+            height: 720px;
+            justify-content: center;
+            overflow: hidden;
+            padding: 50px 60px;
+            position: relative;
+            width: 1280px;
+            flex-shrink: 0;
+        }
+
+        /* 3. BACKGROUND GLOWS */
+        .bg-blob { position: absolute; border-radius: 50%; filter: blur(120px); z-index: 0; opacity: 0.3; }
+        .blob-1 { width: 500px; height: 500px; background: #00E5FF; top: -150px; left: -150px; }
+        .blob-2 { width: 600px; height: 600px; background: #1D4ED8; bottom: -200px; right: -100px; }
+        .slide-container > * { position: relative; z-index: 1; }
+
+        /* 4. TYPOGRAPHY (INCREASED VISIBILITY) */
+        .slide-container h1, .slide-container h2, .slide-container h3, .slide-container h4 {
+            color: #FFFFFF; font-weight: 700; font-family: 'Poppins', sans-serif;
+        }
+        .slide-container p, .slide-container li, .slide-container td {
+            color: #F1F5F9; /* Brighter Slate for max visibility */
+            font-family: 'Lato', sans-serif; 
+            font-size: 22px; 
+            line-height: 1.6;
+            font-weight: 400;
+        }
+        .slide-container .slide-title {
+            font-size: 46px; 
+            font-weight: 700; 
+            margin-bottom: 25px; 
+            text-align: left; 
+            width: 100%; 
+            color: #00E5FF;
+        }
+        .slide-container h3 { font-size: 32px; font-weight: 600; margin-bottom: 15px; color: #FFFFFF; }
+        p { margin-bottom: 15px; }
+        .slide-container .content-area {
+            align-items: center; display: flex; flex-direction: column; flex-grow: 1; justify-content: center; width: 100%;
+        }
+
+        /* ==========================================================================
+           VECTOR SCENE ANIMATION CSS (SLIDES 1 & 4)
+           ========================================================================== */
+        .vector-scene {
+            width: 100%; height: 360px; border-radius: 12px; border: 3px solid #1D2D5B;
+            position: relative; overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+            margin-bottom: 25px;
+        }
+
+        /* Skies */
+        .scene-dusk { background: linear-gradient(to bottom, #7CA0C6 0%, #FAD18E 100%); }
+        .scene-sunrise { background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 100%); }
+
+        /* Environment */
+        .sun { position: absolute; width: 80px; height: 80px; background: #FFF4D2; border-radius: 50%; top: 40px; right: 20%; box-shadow: 0 0 40px #FFF4D2; }
+        .scene-dusk .sun { background: #FF9D5C; box-shadow: 0 0 40px #FF9D5C; top: 100px; }
+        .cloud { position: absolute; background: white; border-radius: 50px; opacity: 0.8; }
+        .c1 { width: 120px; height: 40px; top: 50px; left: 10%; animation: floatSky 40s linear infinite; }
+        .c1::after { content:''; position:absolute; width: 60px; height: 60px; background:white; border-radius:50%; top:-30px; left:20px; }
+        .c2 { width: 160px; height: 50px; top: 80px; left: 60%; animation: floatSky 50s linear infinite reverse; opacity: 0.6; }
+        .c2::after { content:''; position:absolute; width: 70px; height: 70px; background:white; border-radius:50%; top:-40px; left:30px; }
+        .c3 { width: 100px; height: 35px; top: 120px; left: 30%; animation: floatSky 35s linear infinite; }
+        .c3::after { content:''; position:absolute; width: 50px; height: 50px; background:white; border-radius:50%; top:-25px; left:20px; }
+
+        .birds { position: absolute; top: 80px; left: 45%; color: #333; opacity: 0.6;}
+        .birds i { position: absolute; font-size: 20px; }
+        .birds i:nth-child(1) { top: 0; left: 0; }
+        .birds i:nth-child(2) { top: 15px; left: -25px; font-size: 14px;}
+        .birds i:nth-child(3) { top: 20px; left: 25px; font-size: 16px;}
+
+        /* Hills */
+        .hill { position: absolute; bottom: 60px; border-radius: 50% 50% 0 0; }
+        .hill-1 { width: 800px; height: 250px; background: #428B9F; left: -100px; }
+        .hill-2 { width: 700px; height: 200px; background: #B3D19A; right: -50px; }
+        .hill-3 { width: 600px; height: 280px; background: #94C152; left: 25%; }
+        .scene-dusk .hill-1 { background: #355C7D; }
+        .scene-dusk .hill-2 { background: #6C5B7B; }
+        .scene-dusk .hill-3 { background: #C06C84; }
+
+        /* Ground & Road */
+        .ground { position: absolute; bottom: 0; width: 100%; height: 70px; background: #5B6D36; border-top: 2px solid #3F4C25; }
+        .scene-dusk .ground { background: #2A363B; border-top: 2px solid #1A2326; }
+        .road { position: absolute; bottom: 10px; width: 100%; height: 40px; background: #444; }
+        .road-dash { position: absolute; top: 18px; width: 100%; height: 4px; background: repeating-linear-gradient(90deg, transparent, transparent 20px, #fff 20px, #fff 40px); }
+
+        /* Trees */
+        .tree { position: absolute; color: #1F3A22; bottom: 70px; font-size: 80px; filter: drop-shadow(2px 5px 2px rgba(0,0,0,0.3)); }
+        .scene-dusk .tree { color: #111C14; }
+        .t1 { left: 2%; font-size: 120px; }
+        .t2 { left: 9%; font-size: 90px; }
+        .t3 { right: 2%; font-size: 110px; }
+        .t4 { right: 12%; font-size: 75px; }
+
+        /* Actors */
+        .actor { position: absolute; transition: all 0.3s; }
+        
+        .building { font-size: 110px; bottom: 50px; position: absolute; color: #334155; filter: drop-shadow(3px 5px 3px rgba(0,0,0,0.4)); }
+        .scene-dusk .building { color: #1E293B; }
+        .house { left: 6%; }
+        .hospital { right: 6%; color: #F8FAFC; }
+        .scene-dusk .hospital { color: #CBD5E1; }
+        .hospital::after { content:'+'; position:absolute; top:45px; left:44px; font-size:32px; color:#EF4444; font-family:sans-serif; font-weight:bold;}
+
+        /* Realistic Person */
+        .person { 
+            bottom: 50px; left: 10%; 
+            font-size: 85px; /* Taller, realistic human proportions */
+            color: #CBD5E1; z-index: 10; opacity: 0; 
+            animation: showPerson 12s infinite; 
+            filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.5));
+            transform-origin: bottom center; /* Rotates from feet */
+        }
+
+        /* Broken Heart for Story Context */
+        .broken-heart {
+            position: absolute; bottom: 145px; left: 11%; color: #EF4444; font-size: 30px; 
+            opacity: 0; z-index: 11; animation: showHeart 12s infinite; filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.6));
+        }
+        
+        /* Poison Bottle */
+        .poison { 
+            bottom: 125px; left: 14%; font-size: 32px; color: #A855F7; z-index: 10; 
+            opacity: 0; animation: showPoison 12s infinite; filter: drop-shadow(0 0 10px #A855F7);
+        }
+        
+        /* Ambulance - Now driving properly forward */
+        .ambulance { 
+            bottom: 12px; font-size: 60px; color: #EF4444; z-index: 20; 
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.4));
+            /* Removed inverted scale so it naturally points and drives forward */
+        }
+        .status-icon { position: absolute; top: -35px; left: 15px; font-size: 30px; opacity: 0; }
+
+        /* Specific Animations */
+        .anim-s1-amb { animation: driveStandard 12s infinite; }
+        .anim-s1-clock { animation: showClock 12s infinite; color: #F59E0B; filter: drop-shadow(0 0 8px #F59E0B); }
+        .anim-s1-outcome { 
+            bottom: 80px; right: 10%; font-size: 30px; color: #EF4444; 
+            font-family: 'Poppins'; font-weight: bold; opacity: 0; 
+            animation: showBadOutcome 12s infinite; background: rgba(0,0,0,0.85); 
+            padding: 10px 20px; border-radius: 8px; border: 2px solid #EF4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+        
+        .anim-s4-amb { animation: driveFast 12s infinite; }
+        .anim-s4-shield { animation: showShield 12s infinite; color: #00E5FF; }
+        .anim-s4-outcome { 
+            bottom: 80px; right: 10%; font-size: 30px; color: #10B981; 
+            font-family: 'Poppins'; font-weight: bold; opacity: 0; 
+            animation: showGoodOutcome 12s infinite; background: rgba(0,0,0,0.85); 
+            padding: 10px 20px; border-radius: 8px; border: 2px solid #10B981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Drives left to right smoothly */
+        @keyframes driveStandard { 0%, 10% { left: -10%; } 20%, 30% { left: 9%; } 45%, 70% { left: 45%; } 85%, 95% { left: 78%; } 100% { left: 115%; } }
+        @keyframes showClock { 45% { opacity: 0; transform: translateY(10px); } 50%, 65% { opacity: 1; transform: translateY(0); } 70% { opacity: 0; } }
+        @keyframes showBadOutcome { 85% { opacity: 0; transform: scale(0.8); } 88%, 98% { opacity: 1; transform: scale(1); } 100% { opacity: 0; } }
+        
+        @keyframes driveFast { 0%, 10% { left: -10%; } 20%, 30% { left: 9%; } 60%, 80% { left: 78%; } 90%, 100% { left: 115%; } }
+        @keyframes showShield { 30% { opacity: 0; transform: translateY(10px) scale(0.5); } 35%, 55% { opacity: 1; transform: translateY(0) scale(1.2); filter: drop-shadow(0 0 15px #00E5FF); } 60% { opacity: 0; } }
+        @keyframes showGoodOutcome { 60% { opacity: 0; transform: scale(0.8); } 65%, 95% { opacity: 1; transform: scale(1); } 100% { opacity: 0; } }
+        
+        /* Realistic Fall Animation */
+        @keyframes showPerson { 
+            0%, 5% { opacity: 1; color: #CBD5E1; transform: rotate(0); } 
+            10%, 25% { opacity: 1; color: #EF4444; transform: rotate(90deg) translateX(10px); } /* Pivots on feet, falls flat */
+            30%, 100% { opacity: 0; } 
+        }
+        @keyframes showHeart { 0%, 2% { opacity: 1; transform: scale(1) translateY(0); } 4%, 100% { opacity: 0; transform: scale(1.3) translateY(-15px); } }
+        @keyframes showPoison { 3% { opacity: 0; transform: translateY(0); } 5%, 8% { opacity: 1; transform: translateY(-15px); } 10%, 100% { opacity: 0; } }
+        @keyframes floatSky { 0% { transform: translateX(0); } 100% { transform: translateX(100px); } }
+
+        /* Story Text Overhauled for Max Visibility */
+        .story-caption { 
+            display: flex; justify-content: space-between; width: 100%; 
+            background: #0F172A; border: 2px solid #1D4ED8; border-radius: 12px; 
+            padding: 25px 30px; gap: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .story-step { text-align: center; flex: 1; font-size: 20px; position: relative; line-height: 1.4; color: #E2E8F0; }
+        .story-step:not(:last-child)::after { content: '➔'; position: absolute; right: -25px; top: 50%; transform: translateY(-50%); color: #475569; font-size: 28px; }
+        .story-step strong { color: #00E5FF; display: block; margin-bottom: 8px; font-family: 'Poppins'; font-size: 24px; }
+        .step-bad strong { color: #EF4444; }
+        .step-good strong { color: #10B981; }
+
+        /* ==========================================================================
+           STANDARD LAYOUT COMPONENTS
+           ========================================================================== */
+        .two-column { align-items: flex-start; display: flex; gap: 50px; width: 100%; }
+        .two-column > div { flex: 1; }
+        .two-column.tiled { align-items: stretch; }
+        .two-column.tiled > div { background-color: #111C3D; border-radius: 12px; border: 1px solid #1D2D5B; padding: 40px; }
+        .two-column ul { list-style: disc; margin: 0; padding-left: 25px; }
+        .two-column li { margin-bottom: 18px; }
+        
+        .image-wrapper { border-radius: 12px; height: 350px; width: 100%; overflow: hidden; border: 1px solid #1D2D5B; }
+        .image-wrapper img { height: 100%; width: 100%; object-fit: cover; }
+        .two-column .image-wrapper img { object-fit: contain; }
+
+        .tiled-content { align-items: stretch; display: flex; gap: 40px; justify-content: center; width: 100%; }
+        .tile { align-items: center; background-color: #111C3D; border-radius: 12px; border: 1px solid #1D2D5B; display: flex; flex-direction: column; flex: 1; padding: 40px 30px; text-align: center; }
+        .tile .icon { color: #00E5FF; font-size: 55px; margin-bottom: 25px; }
+
+        /* Bullet Points */
+        .bullet-list { max-width: 1000px; width: 100%; }
+        .bullet-list ul { list-style: none; margin: 0; padding: 0; }
+        .bullet-list li { gap: 15px; margin-bottom: 25px; padding-left: 50px; position: relative; }
+        .bullet-list i { color: #00E5FF; font-size: 32px; left: 0; margin-top: 2px; position: absolute; text-align: center; top: 0; }
+
+        /* Table */
+        .table-layout { width: 100%; }
+        .table-layout table { border-collapse: collapse; width: 100%; }
+        .table-layout th, .table-layout td { border-bottom: 1px solid #1D2D5B; padding: 22px 24px; text-align: left; }
+        .table-layout th { background-color: #111C3D; color: #00E5FF; font-size: 24px; font-weight: 700; border-bottom: 2px solid #00E5FF; }
+
+        /* Bar Chart */
+        .chart-container { display: flex; flex-direction: column; gap: 20px; width: 100%; margin-bottom: 30px; }
+        .bar { align-items: center; display: flex; gap: 20px; }
+        .bar .label { color: #F1F5F9; flex: 0 0 300px; font-weight: 700; text-align: right; font-size: 22px; }
+        .bar .bar-inner { background-color: #111C3D; border-radius: 8px; flex-grow: 1; height: 50px; border: 1px solid #1D2D5B; }
+        .bar .bar-fill { align-items: center; border-radius: 8px; color: #050814; display: flex; font-size: 22px; font-weight: 700; height: 100%; justify-content: flex-end; padding-right: 20px; }
+        .chart-summary { font-style: italic; margin-top: 20px; max-width: 90%; text-align: center; font-size: 22px; }
+
+        /* Timeline */
+        .timeline-layout { align-items: stretch; display: flex; height: stretch; justify-content: space-between; position: relative; width: 100%; margin-top: 40px; }
+        .timeline-layout .timeline-line { background-color: #1D2D5B; height: 4px; left: 0; position: absolute; top: 50%; transform: translateY(-2px); width: 100%; z-index: 0; }
+        .timeline-item { position: relative; text-align: center; width: 23%; }
+        .timeline-item::after { background-color: #0A1128; border-radius: 50%; border: 4px solid #00E5FF; content: ''; height: 20px; left: 50%; position: absolute; top: 50%; transform: translate(-50%, -50%); width: 20px; z-index: 1; }
+        .timeline-item .content-wrapper { left: 0; position: absolute; width: 100%; }
+        .timeline-item:nth-child(odd) .content-wrapper { bottom: 50%; margin-bottom: 30px; }
+        .timeline-item:nth-child(even) .content-wrapper { margin-top: 30px; top: 50%; }
+        .timeline-item h3 { color: #00E5FF; font-size: 28px; }
+
+        /* Formula */
+        #formula-container { display: math; font-size: 40px; color: #00E5FF; margin-top: 40px; text-align: center; width: 100%; }
+
+        /* Intro & Q&A Layouts */
+        .center-layout { margin: 0 auto; text-align: center; width: 100%; align-self: center; }
+        .center-layout h1 { font-size: 75px; margin-bottom: 20px; color: #00E5FF; }
+        .center-layout h2 { font-size: 80px; margin-bottom: 20px; color: #00E5FF; }
+        .center-layout .subtitle { font-size: 32px; color: #FFFFFF; font-weight: 400; }
+        .center-layout .contact-info { color: #CBD5E1; font-size: 26px; margin-top: 40px; font-family: 'Poppins', sans-serif; font-weight: 600; }
+
+        /* --- GEMINI API INTEGRATION CSS --- */
+        /* Floating Chat */
+        .ai-chat-btn { position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, #00E5FF, #1D4ED8); color: white; border: none; border-radius: 50%; width: 70px; height: 70px; font-size: 30px; cursor: pointer; box-shadow: 0 5px 20px rgba(0, 229, 255, 0.4); z-index: 1000; transition: transform 0.3s; display: flex; align-items: center; justify-content: center; }
+        .ai-chat-btn:hover { transform: scale(1.1); }
+        .ai-chat-panel { position: fixed; bottom: 120px; right: 30px; width: 400px; height: 500px; background: #0A1128; border: 2px solid #1D4ED8; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 1000; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: all 0.3s; overflow: hidden; transform: translateY(20px); }
+        .ai-chat-panel.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .ai-chat-header { background: #111C3D; padding: 15px 20px; font-family: 'Poppins', sans-serif; font-weight: 700; color: #00E5FF; border-bottom: 1px solid #1D2D5B; display: flex; justify-content: space-between; align-items: center; }
+        .ai-chat-header button { background: none; border: none; color: #CBD5E1; font-size: 20px; cursor: pointer; transition: color 0.2s; }
+        .ai-chat-header button:hover { color: #FFF; }
+        .ai-chat-body { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; font-family: 'Lato', sans-serif; }
+        .ai-message { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 16px; line-height: 1.4; }
+        .ai-message.user { background: #1D4ED8; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .ai-message.bot { background: #111C3D; color: #F1F5F9; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #1D2D5B; }
+        .ai-chat-input { display: flex; padding: 15px; background: #111C3D; border-top: 1px solid #1D2D5B; }
+        .ai-chat-input input { flex-grow: 1; background: #050814; border: 1px solid #1D2D5B; color: white; padding: 12px; border-radius: 8px; font-family: 'Lato', sans-serif; outline: none; transition: border-color 0.2s; }
+        .ai-chat-input input:focus { border-color: #00E5FF; }
+        .ai-chat-input button { background: #00E5FF; color: #050814; border: none; padding: 0 20px; margin-left: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+        .ai-chat-input button:hover { opacity: 0.8; }
+
+        /* Simulator on Slide 12 */
+        .simulator-box { background: rgba(17, 28, 61, 0.8); border: 1px solid #1D4ED8; border-radius: 12px; padding: 20px; margin-top: 20px; width: 100%; text-align: left; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+        .simulator-box h4 { margin-bottom: 10px; color: #00E5FF; display: flex; align-items: center; gap: 10px; font-size: 24px; }
+        .sim-input-group { display: flex; gap: 15px; margin-bottom: 15px; }
+        .sim-input-group input { flex-grow: 1; padding: 12px 16px; border-radius: 8px; border: 1px solid #1D4ED8; background: #050814; color: white; font-size: 18px; outline: none; transition: border-color 0.2s; }
+        .sim-input-group input:focus { border-color: #00E5FF; }
+        .sim-input-group button { background: linear-gradient(90deg, #1D4ED8, #00E5FF); color: #050814; font-weight: bold; border: none; border-radius: 8px; padding: 0 25px; cursor: pointer; font-size: 18px; transition: filter 0.2s;}
+        .sim-input-group button:hover { filter: brightness(1.2); }
+        .sim-result { font-size: 18px; color: #CBD5E1; min-height: 60px; background: #0A1128; padding: 15px; border-radius: 8px; border-left: 4px solid #00E5FF; }
+        .loading-dots { display: inline-block; }
+        .loading-dots::after { content: '.'; animation: dots 1.5s steps(5, end) infinite; }
+        @keyframes dots { 0%, 20% { color: rgba(0,0,0,0); text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); } 40% { color: inherit; text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); } 60% { text-shadow: .25em 0 0 inherit, .5em 0 0 rgba(0,0,0,0); } 80%, 100% { text-shadow: .25em 0 0 inherit, .5em 0 0 inherit; } }
+    </style>
+</head>
+<body>
+
+<!-- SLIDE 0: TITLE -->
+<div class="slide-container" id="slide0">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="center-layout">
+        <h1>Nano-dote: A Paradigm Shift</h1>
+        <p class="subtitle">A Nanoparticle-Based Rapid Antidote System for Emergency Critical Care</p>
+    </div>
+</div>
+
+<!-- SLIDE 1: STANDARD PROTOCOL VECTOR SCENE -->
+<div class="slide-container" id="slide1">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <h2 class="slide-title">The Reality of Delayed Treatment</h2>
+    <div class="content-area">
+        <div class="vector-scene scene-dusk">
+            <div class="sun"></div>
+            <div class="cloud c1"></div>
+            <div class="cloud c2"></div>
+            <div class="cloud c3"></div>
+            <div class="birds"><i class="fa-solid fa-dove"></i><i class="fa-solid fa-dove"></i><i class="fa-solid fa-dove"></i></div>
+            <div class="hill hill-1"></div>
+            <div class="hill hill-2"></div>
+            <div class="hill hill-3"></div>
+            <div class="ground"></div>
+            <div class="road"><div class="road-dash"></div></div>
+            <i class="fa-solid fa-tree tree t1"></i><i class="fa-solid fa-tree tree t2"></i><i class="fa-solid fa-tree tree t3"></i><i class="fa-solid fa-tree tree t4"></i>
+            
+            <div class="building house"><i class="fa-solid fa-house"></i></div>
+            <div class="building hospital"><i class="fa-solid fa-hospital"></i></div>
+            
+            <!-- Realistic Person + Heartbreak -->
+            <div class="broken-heart"><i class="fa-solid fa-heart-crack"></i></div>
+            <div class="actor person"><i class="fa-solid fa-person"></i></div>
+            <div class="actor poison"><i class="fa-solid fa-flask"></i></div>
+            
+            <div class="actor ambulance anim-s1-amb">
+                <i class="fa-solid fa-truck-medical"></i>
+                <div class="status-icon anim-s1-clock"><i class="fa-solid fa-clock"></i></div>
+            </div>
+            <div class="actor anim-s1-outcome"><i class="fa-solid fa-skull-crossbones"></i> Severe Damage</div>
+        </div>
+        <div class="story-caption">
+            <div class="story-step"><strong>1. The Incident</strong>Devastated by a breakup, he ingests poison.</div>
+            <div class="story-step"><strong>2. EMS Arrives</strong>Airway is stabilized, but no antidote available.</div>
+            <div class="story-step step-bad"><strong>3. The Delay</strong>Awaiting specific lab results to treat.</div>
+            <div class="story-step step-bad"><strong>4. Tragic Outcome</strong>Toxins circulate freely, destroying organs.</div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 2: FLAWS IN PROTOCOL -->
+<div class="slide-container" id="slide2">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <h2 class="slide-title">Flaws in Standard Protocol</h2>
+    <div class="content-area">
+        <div class="tiled-content">
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-truck-medical"></i></div>
+                <h3>The Pre-Hospital Gap</h3>
+                <p>Specific targeted antidotes are rarely carried or available in pre-hospital EMS settings, severely limiting field interventions.</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-vial-circle-check"></i></div>
+                <h3>The ID Bottleneck</h3>
+                <p>Accurate toxin identification is frequently delayed by lab processing times, postponing targeted cellular therapy.</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-hourglass-end"></i></div>
+                <h3>The Golden Hour Lost</h3>
+                <p>Every minute preceding targeted treatment drastically worsens mortality. Unneutralized toxins rapidly cause physiological collapse.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 3: INTRODUCING NANO-DOTE -->
+<div class="slide-container" id="slide3">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <h2 class="slide-title">Introducing Nano-dote</h2>
+    <div class="content-area">
+        <div class="two-column">
+            <div>
+                <h3>A Paradigm Shift</h3>
+                <p>An injectable, broad-spectrum nanoparticle-based rapid antidote system designed for emergency critical care.</p>
+                <p>Engineered to bind and neutralize multiple classes of toxins instantly in the field. Absolutely no lab results required.</p>
+                <p>It acts as a powerful, time-saving molecular sponge, bridging the dangerous pre-hospital gap and keeping the patient stable.</p>
+            </div>
+            <div>
+                <div class="image-wrapper">
+                    <img src="http://googleusercontent.com/image_collection/image_retrieval/9298213317473936258" alt="Glowing nanoparticle abstract medical 3D rendering">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 4: NANO-DOTE VECTOR SCENE (ALTERNATE ENDING) -->
+<div class="slide-container" id="slide4">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <h2 class="slide-title">The Nano-dote Alternate Ending</h2>
+    <div class="content-area">
+        <div class="vector-scene scene-sunrise">
+            <div class="sun"></div>
+            <div class="cloud c1"></div>
+            <div class="cloud c2"></div>
+            <div class="cloud c3"></div>
+            <div class="birds"><i class="fa-solid fa-dove"></i><i class="fa-solid fa-dove"></i><i class="fa-solid fa-dove"></i></div>
+            <div class="hill hill-1"></div>
+            <div class="hill hill-2"></div>
+            <div class="hill hill-3"></div>
+            <div class="ground"></div>
+            <div class="road"><div class="road-dash"></div></div>
+            <i class="fa-solid fa-tree tree t1"></i><i class="fa-solid fa-tree tree t2"></i><i class="fa-solid fa-tree tree t3"></i><i class="fa-solid fa-tree tree t4"></i>
+            
+            <div class="building house"><i class="fa-solid fa-house"></i></div>
+            <div class="building hospital"><i class="fa-solid fa-hospital"></i></div>
+            
+            <!-- Realistic Person + Heartbreak -->
+            <div class="broken-heart"><i class="fa-solid fa-heart-crack"></i></div>
+            <div class="actor person"><i class="fa-solid fa-person"></i></div>
+            <div class="actor poison"><i class="fa-solid fa-flask"></i></div>
+            
+            <div class="actor ambulance anim-s4-amb">
+                <i class="fa-solid fa-truck-medical"></i>
+                <div class="status-icon anim-s4-shield"><i class="fa-solid fa-shield-virus"></i></div>
+            </div>
+            <div class="actor anim-s4-outcome"><i class="fa-solid fa-heart-pulse"></i> Patient Saved!</div>
+        </div>
+        <div class="story-caption">
+            <div class="story-step"><strong>1. The Incident</strong>Same patient ingests poison in severe crisis.</div>
+            <div class="story-step"><strong>2. EMS Arrives</strong>Equipped with Nano-dote broad-spectrum IV.</div>
+            <div class="story-step step-good"><strong>3. Immediate Action</strong>Toxins neutralized en route. No lab delays.</div>
+            <div class="story-step step-good"><strong>4. Patient Saved</strong>Arrives stabilized. Minimal organ damage.</div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 5: BIOMIMETIC DEFENSE -->
+<div class="slide-container" id="slide5">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <h2 class="slide-title">Mechanism of Action: Biomimicry</h2>
+    <div class="content-area">
+        <div class="two-column">
+            <div>
+                <ul>
+                    <li>Nano-dote operates entirely within the bloodstream, intercepting and sequestering toxins before they can enter vital tissues.</li>
+                    <li>The nanoparticles are ingeniously coated with natural cell membranes to mimic human cellular targets (e.g., Red Blood Cells).</li>
+                    <li>Lethal toxins mistake the circulating nanoparticle for their intended human cell and bind irreversibly to the polymeric core.</li>
+                    <li>This fusion creates an inactive "toxin-nanoparticle complex" that physically blocks cellular damage cascades.</li>
+                </ul>
+            </div>
+            <div>
+                <div class="image-wrapper">
+                    <img src="http://googleusercontent.com/image_collection/image_retrieval/12224198349141353733" alt="Microscopic view of bloodstream with red blood cells and targeted nanoparticles">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 6: PROVEN PLATFORM -->
+<div class="slide-container" id="slide6">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <h2 class="slide-title">Nanotechnology: Proven Platform</h2>
+    <div class="content-area">
+        <div class="table-layout">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nanotechnology Application</th>
+                        <th>Type of Nanomaterial</th>
+                        <th>Clinical Use</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>mRNA Vaccine Delivery</td>
+                        <td>Lipid Nanoparticles</td>
+                        <td>COVID-19 Vaccination</td>
+                    </tr>
+                    <tr>
+                        <td>Cancer Drug Delivery</td>
+                        <td>Liposomes</td>
+                        <td>Targeted Chemotherapy</td>
+                    </tr>
+                    <tr>
+                        <td>Diagnostic Imaging</td>
+                        <td>Iron-oxide Nanoparticles</td>
+                        <td>MRI Contrast Enhancement</td>
+                    </tr>
+                    <tr>
+                        <td>Rapid Diagnostics</td>
+                        <td>Nano-biosensors</td>
+                        <td>Point-of-Care Testing</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 7: CORE OBJECTIVES -->
+<div class="slide-container" id="slide7">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <h2 class="slide-title">Core Objectives of Nano-dote</h2>
+    <div class="content-area">
+        <div class="tiled-content">
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3>Broad-Spectrum Neutralization</h3>
+                <p>To bind and inactive multiple classes of circulating toxins immediately upon EMS administration.</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-ban"></i></div>
+                <h3>Prevent Cellular Uptake</h3>
+                <p>To physically block complexed toxins from crossing the Blood-Brain Barrier (BBB) or entering vital organ tissues.</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-bridge-water"></i></div>
+                <h3>Bridge to Definitive Care</h3>
+                <p>To act as a time-saving molecular sponge, keeping the patient stable until specific antidotes can be utilized.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 8: MOLECULAR SPONGES -->
+<div class="slide-container" id="slide8">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <h2 class="slide-title">The Concept: Molecular Sponges</h2>
+    <div class="content-area">
+        <div class="two-column">
+            <div>
+                <h3>Injectable Biocompatible Vehicles</h3>
+                <ul>
+                    <li>Nano-dote utilizes an injectable formulation of highly biocompatible lipid or polymer nanoparticles designed for extreme environments.</li>
+                    <li>These engineered carriers act as non-specific molecular sponges in the bloodstream.</li>
+                    <li>They rapidly sequester circulating toxins through profound lipophilic attraction, electrostatic interaction, and surface adsorption before they reach critical cellular targets.</li>
+                </ul>
+            </div>
+            <div>
+                <div class="image-wrapper">
+                    <img src="http://googleusercontent.com/image_collection/image_retrieval/12602969145362421601" alt="Abstract 3D render of a lipid nanoparticle or molecular sponge">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 9: CLEARANCE & PROTECTION -->
+<div class="slide-container" id="slide9">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <h2 class="slide-title">Clearance & Protection</h2>
+    <div class="content-area">
+        <div class="two-column tiled">
+            <div>
+                <h3>Blood-Brain Barrier Defense</h3>
+                <p>Once a toxin binds to the Nano-dote carrier, the resulting complex's increased size and altered lipophilicity physically prevent it from crossing the highly selective blood-brain barrier, protecting the Central Nervous System.</p>
+            </div>
+            <div>
+                <h3>Biological Elimination</h3>
+                <p>The resulting biologically inactive toxin-nanoparticle complexes are recognized by the body's reticuloendothelial system as inert waste. They are safely cleared through standard hepatic and renal pathways.</p>
+            </div>
+        </div>
+        
+        <div id="formula-container">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <msub><mi>K</mi><mi>d</mi></msub>
+                <mo>=</mo>
+                <mfrac>
+                    <mrow><mo>[</mo><mi>Toxin</mi><mo>]</mo><mo>[</mo><mi>NP</mi><mo>]</mo></mrow>
+                    <mrow><mo>[</mo><mi>Toxin</mi><mo>-</mo><mi>NP</mi><mo>]</mo></mrow>
+                </mfrac>
+            </math>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 10: INTERVENTION PROTOCOL -->
+<div class="slide-container" id="slide10">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <h2 class="slide-title">Nano-dote Intervention Protocol</h2>
+    <div class="content-area">
+        <div class="bullet-list">
+            <ul>
+                <li><i class="fa-solid fa-1"></i><strong>EMS Assessment:</strong> Rapid field identification of suspected acute systemic poisoning.</li>
+                <li><i class="fa-solid fa-2"></i><strong>Nano-dote IV Push:</strong> Immediate administration of broad-spectrum nanocarriers by paramedics.</li>
+                <li><i class="fa-solid fa-3"></i><strong>En Route Stabilization:</strong> Toxins are neutralized during transport, dramatically expanding the golden hour.</li>
+                <li><i class="fa-solid fa-4"></i><strong>ER Definitive Care:</strong> Patient arrives stable; delayed specific antidotes are safely administered based on lab results.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 11: AUGMENTING, NOT REPLACING -->
+<div class="slide-container" id="slide11">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <h2 class="slide-title">Augmenting, Not Replacing</h2>
+    <div class="content-area">
+        <div class="two-column tiled">
+            <div>
+                <h3>What Nano-dote Cannot Do</h3>
+                <p>Nano-dote is entirely preventative in its binding action. It cannot reverse damage that has already occurred at the cellular receptor level prior to administration, nor can it repair necrotizing tissue or reverse established biological enzyme inhibition.</p>
+            </div>
+            <div>
+                <h3>Why Definitive Antidotes Remain Crucial</h3>
+                <p>Specific antidotes (like Atropine or Naloxone) actively compete at the receptor site or chemically reactivate targeted enzymes. Nano-dote clears the circulating blood, while specific antidotes rescue the already-compromised, intoxicated cells.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 12: FEASIBILITY -->
+<div class="slide-container" id="slide12">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <h2 class="slide-title">Feasibility: Binding Profiles</h2>
+    <div class="content-area">
+        <div class="chart-container">
+            <div class="bar">
+                <div class="label">Lipophilic Drug Overdose</div>
+                <div class="bar-inner"><div class="bar-fill" style="width: 94%; background: linear-gradient(90deg, #00C9A7, #00E5FF);">94%</div></div>
+            </div>
+            <div class="bar">
+                <div class="label">Organophosphates</div>
+                <div class="bar-inner"><div class="bar-fill" style="width: 88%; background: linear-gradient(90deg, #00C9A7, #00E5FF);">88%</div></div>
+            </div>
+            <div class="bar">
+                <div class="label">Systemic Chemical Toxins</div>
+                <div class="bar-inner"><div class="bar-fill" style="width: 82%; background: linear-gradient(90deg, #00C9A7, #00E5FF);">82%</div></div>
+            </div>
+            <div class="bar">
+                <div class="label">Hemotoxic Snake Venom</div>
+                <div class="bar-inner"><div class="bar-fill" style="width: 76%; background: linear-gradient(90deg, #00C9A7, #00E5FF);">76%</div></div>
+            </div>
+        </div>
+        <p class="chart-summary">In-vitro feasibility models demonstrate consistently high binding and sequestration rates across diverse chemical classes, particularly for lipophilic compounds, validating the broad-spectrum potential.</p>
+        
+        <!-- NEW GEMINI FEATURE: TOXIN SIMULATOR -->
+        <div class="simulator-box">
+            <h4><i class="fa-solid fa-flask-vial"></i> AI Toxin Binding Simulator ✨</h4>
+            <p style="font-size: 18px; margin-bottom: 15px;">Enter a specific toxin or compound to see Nano-dote's dynamically predicted neutralization profile.</p>
+            <div class="sim-input-group">
+                <input type="text" id="toxinInput" placeholder="e.g., Fentanyl, Cyanide, Botulinum Toxin...">
+                <button onclick="simulateToxin()">Simulate ✨</button>
+            </div>
+            <div class="sim-result" id="simResult">
+                Awaiting input...
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 13: IMPLEMENTATION -->
+<div class="slide-container" id="slide13">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <h2 class="slide-title">Strategic Implementation</h2>
+    <div class="content-area">
+        <div class="timeline-layout">
+            <div class="timeline-line"></div>
+            <div class="timeline-item">
+                <div class="content-wrapper">
+                    <h3>Phase 1 - Validation</h3>
+                    <p>In vitro optimization of toxin-binding capacity, efficiency, and formulation stability.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="content-wrapper">
+                    <h3>Phase 2 - Preclinical</h3>
+                    <p>In vivo safety profiling, rigorous pharmacokinetics, and animal survival models.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="content-wrapper">
+                    <h3>Phase 3 - Clinical</h3>
+                    <p>Phased emergency setting trials monitoring safety and key stabilization metrics.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="content-wrapper">
+                    <h3>Phase 4 - Integration</h3>
+                    <p>Fleet-wide ambulance deployment with specialized EMS administration training.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 14: Q&A -->
+<div class="slide-container" id="slide14">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="center-layout">
+        <h2>Conclusion</h2>
+        <p class="subtitle">A vital bridge over the golden hour of toxicology.</p>
+        <div class="contact-info">
+            Thank You | research@nanodote-systems.org
+        </div>
+    </div>
+</div>
+
+<!-- NEW GEMINI FEATURE: FLOATING AI COACH -->
+<button class="ai-chat-btn" onclick="toggleChat()" title="Ask the Nano-dote AI">✨</button>
+<div class="ai-chat-panel" id="chatPanel">
+    <div class="ai-chat-header">
+        <span>Nano-dote AI Assistant ✨</span>
+        <button onclick="toggleChat()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="ai-chat-body" id="chatBody">
+        <div class="ai-message bot">Hello! I am the Nano-dote AI. Ask me to explain any slide, elaborate on the science, or answer audience questions!</div>
+    </div>
+    <div class="ai-chat-input">
+        <input type="text" id="chatInput" placeholder="Ask about Nano-dote..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+        <button onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<script>
+    // --- GEMINI API INTEGRATION ---
+    const apiKey = ""; // The execution environment provides the key at runtime
+
+    async function callGeminiAPI(prompt, systemInstruction = "") {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+        
+        const payload = {
+            contents: [{ parts: [{ text: prompt }] }]
+        };
+        
+        if (systemInstruction) {
+            payload.systemInstruction = { parts: [{ text: systemInstruction }] };
+        }
+
+        // Exponential backoff
+        let retries = 5;
+        let delay = 1000;
+        
+        while (retries > 0) {
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const result = await response.json();
+                return result.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+            } catch (error) {
+                retries--;
+                if (retries === 0) {
+                    return "Sorry, I am having trouble processing that right now. Please check your connection and try again.";
+                }
+                await new Promise(res => setTimeout(res, delay));
+                delay *= 2;
+            }
+        }
+    }
+
+    // --- FEATURE 1: AI TOXIN SIMULATOR (SLIDE 12) ---
+    async function simulateToxin() {
+        const inputEl = document.getElementById("toxinInput");
+        const resultDiv = document.getElementById("simResult");
+        const toxin = inputEl.value.trim();
+        
+        if (!toxin) return;
+        
+        resultDiv.innerHTML = `<span class="loading-dots">Simulating binding kinetics for ${toxin}</span>`;
+        
+        const systemPrompt = `You are a highly advanced biochemical AI assisting with a presentation on 'Nano-dote', a fictional broad-spectrum nanoparticle antidote. 
+        The user has inputted a toxin name: "${toxin}". 
+        Generate a concise, realistic-sounding 2-3 sentence scientific analysis of how Nano-dote's biomimetic nanoparticles would likely sequester and neutralize it. 
+        Briefly mention chemical factors like lipophilicity, electrostatic attraction, or molecular weight as they relate to this specific toxin. Keep the tone authoritative and purely scientific.`;
+        
+        const response = await callGeminiAPI(`Analyze Nano-dote efficacy against: ${toxin}`, systemPrompt);
+        
+        // Format markdown bolding if present
+        const formattedResponse = response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        resultDiv.innerHTML = `<strong>${toxin} Analysis:</strong><br><br>` + formattedResponse;
+    }
+
+    // --- FEATURE 2: FLOATING AI ASSISTANT ---
+    function toggleChat() {
+        document.getElementById("chatPanel").classList.toggle("active");
+        if (document.getElementById("chatPanel").classList.contains("active")) {
+            document.getElementById("chatInput").focus();
+        }
+    }
+
+    async function sendChatMessage() {
+        const inputEl = document.getElementById("chatInput");
+        const text = inputEl.value.trim();
+        if (!text) return;
+        
+        appendMessage(text, "user");
+        inputEl.value = "";
+        
+        const typingId = appendMessage("<span class=\"loading-dots\">Analyzing</span>", "bot");
+        
+        const systemPrompt = `You are the official AI assistant for the 'Nano-dote' presentation. Nano-dote is a fictional broad-spectrum nanoparticle-based rapid antidote system for emergency critical care. 
+        It works by acting as a biomimetic molecular sponge in the bloodstream, neutralizing toxins before they reach vital organs or cross the Blood-Brain Barrier (BBB).
+        Answer the user's questions confidently, acting as an expert in nanotechnology and emergency medicine. Keep your answers concise, ideally under 3-4 sentences. Do not mention that Nano-dote is fictional unless explicitly asked.`;
+        
+        const response = await callGeminiAPI(text, systemPrompt);
+        
+        // Convert basic markdown to HTML for the chat window
+        const formattedResponse = response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+        updateMessage(typingId, formattedResponse);
+    }
+
+    let messageCounter = 0;
+    function appendMessage(text, sender) {
+        const id = `msg-${messageCounter++}`;
+        const chatBody = document.getElementById("chatBody");
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `ai-message ${sender}`;
+        msgDiv.id = id;
+        msgDiv.innerHTML = text;
+        chatBody.appendChild(msgDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+        return id;
+    }
+
+    function updateMessage(id, text) {
+        document.getElementById(id).innerHTML = text;
+        const chatBody = document.getElementById("chatBody");
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+</script>
+</body>
+</html>
